@@ -58,10 +58,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private DcMotor FrontLeft   = null;
-    private DcMotor FrontRight  = null;
-    private DcMotor BackRight  = null;
-    private DcMotor BackLeft  = null;
+    private DcMotor frontLeftMotor   = null;
+    private DcMotor frontRightMotor  = null;
+    private DcMotor backRightMotor  = null;
+    private DcMotor backLeftMotor  = null;
     private ElapsedTime runtime = new ElapsedTime();
 
     //Declare motor speeds
@@ -72,18 +72,18 @@ public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        FrontLeft  = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRight  = hardwareMap.get(DcMotor.class, "FrontRight");
-        BackRight  = hardwareMap.get(DcMotor.class, "BackRight");
-        BackLeft  = hardwareMap.get(DcMotor.class, "BackLeft");
+        frontLeftMotor  = hardwareMap.get(DcMotor.class, "FrontLeft");
+        frontRightMotor  = hardwareMap.get(DcMotor.class, "FrontRight");
+        backRightMotor  = hardwareMap.get(DcMotor.class, "BackRight");
+        backLeftMotor  = hardwareMap.get(DcMotor.class, "BackLeft");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        FrontLeft.setDirection(DcMotor.Direction.REVERSE);
-        FrontRight.setDirection(DcMotor.Direction.REVERSE);
-        BackRight.setDirection(DcMotor.Direction.FORWARD);
-        BackLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
@@ -94,26 +94,16 @@ public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
-        // Step 1:  Spin right for 1.3 seconds
-            FrontLeft.setPower(-TURN_SPEED);
-            FrontRight.setPower(TURN_SPEED);
-            BackRight.setPower(-TURN_SPEED);
-            BackLeft.setPower(TURN_SPEED);
+        // Step 1:  Strafe right for 0.5 seconds
+        frontLeftMotor.setPower(-TURN_SPEED);
+        frontRightMotor.setPower(-TURN_SPEED);
+        backRightMotor.setPower(TURN_SPEED);
+        backLeftMotor.setPower(-TURN_SPEED);
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.3)) {
+            while (opModeIsActive() && (runtime.seconds() < 0.5)) {
                 telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
-
-            // Step 2: Move forward for 2 seconds
-            FrontLeft.setPower(FORWARD_SPEED);
-            FrontRight.setPower(FORWARD_SPEED);
-            BackRight.setPower(FORWARD_SPEED);
-            BackLeft.setPower(FORWARD_SPEED);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-                telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-                telemetry.update();
             }
     }
 }
