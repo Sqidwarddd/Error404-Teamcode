@@ -34,7 +34,7 @@
  import com.qualcomm.robotcore.hardware.DcMotor;
  import com.qualcomm.robotcore.hardware.Servo;
 
- @TeleOp(name = "Byron's Velocity Raptors Code", group = "TeleOp")
+ @TeleOp(name = "Velocity Raptors Actual Code", group = "TeleOp")
  public class Velocity_Raptors_Java_Op_Mode extends OpMode {
 
      // Motor and Servo Declarations

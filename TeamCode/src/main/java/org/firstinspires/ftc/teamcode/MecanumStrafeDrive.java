@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode;
 
-}
 package org.firstinspires.ftc.teamcode;
 
         import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,20 +6,15 @@ package org.firstinspires.ftc.teamcode;
 
 public class MecanumStrafeDrive extends LinearOpMode {
 
-    // Define motors
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    private DcMotor backLeft;
-    private DcMotor backRight;
-
     @Override
     public void runOpMode() {
 
         // Initialize motors with REV Control Hub ports 0-3
-        frontLeft = hardwareMap.dcMotor.get("motor0"); // Motor 0: Front Left
-        frontRight = hardwareMap.dcMotor.get("motor1"); // Motor 1: Front Right
-        backLeft = hardwareMap.dcMotor.get("motor2"); // Motor 2: Back Left
-        backRight = hardwareMap.dcMotor.get("motor3"); // Motor 3: Back Right
+        // Define motors
+        DcMotor frontLeft = hardwareMap.dcMotor.get("motor0"); // Motor 0: Front Left
+        DcMotor frontRight = hardwareMap.dcMotor.get("motor1"); // Motor 1: Front Right
+        DcMotor backLeft = hardwareMap.dcMotor.get("motor2"); // Motor 2: Back Left
+        DcMotor backRight = hardwareMap.dcMotor.get("motor3"); // Motor 3: Back Right
 
         // Set motor directions (if needed for your setup)
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
