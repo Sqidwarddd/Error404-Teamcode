@@ -27,198 +27,148 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+ package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
+ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+ import com.qualcomm.robotcore.hardware.DcMotor;
+ import com.qualcomm.robotcore.hardware.Servo;
 
-/*
- * This file contains an example of a Linear "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When a selection is made from the menu, the corresponding OpMode is executed.
- *
- * This particular OpMode illustrates driving a 4-motor Omni-Directional (or Holonomic) robot.
- * This code will work with either a Mecanum-Drive or an X-Drive train.
- * Both of these drives are illustrated at https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html
- * Note that a Mecanum drive must display an X roller-pattern when viewed from above.
- *
- * Also note that it is critical to set the correct rotation direction for each motor.  See details below.
- *
- * Holonomic drives provide the ability for the robot to move in three axes (directions) simultaneously.
- * Each motion axis is controlled by one Joystick axis.
- *
- * 1) Axial:    Driving forward and backward               Left-joystick Forward/Backward
- * 2) Lateral:  Strafing right and left                     Left-joystick Right and Left
- * 3) Yaw:      Rotating Clockwise and counter clockwise    Right-joystick Right and Left
- *
- * This code is written assuming that the right-side motors need to be reversed for the robot to drive forward.
- * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip
- * the direction of all 4 motors (see code below).
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
+ @TeleOp(name = "Byron's Velocity Raptors Code", group = "TeleOp")
+ public class Velocity_Raptors_Java_Op_Mode extends OpMode {
 
-@TeleOp
-public class Velocity_Raptors_Java_Op_Mode extends LinearOpMode {
+     // Motor and Servo Declarations
+     private DcMotor viperSlideMotor;
+     private DcMotor frontLeftMotor;
+     private DcMotor frontRightMotor;
+     private DcMotor backLeftMotor;
+     private DcMotor backRightMotor;
 
-    // Declare OpMode members for each of the 4 motors.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor FrontLeft = null;
-    private DcMotor FrontRight = null;
-    private DcMotor BackLeft = null;
-    private DcMotor BackRight = null;
-    private DcMotor Slide = null;
-    private Servo IntakeLeft = null;
-    private Servo IntakeRight = null;
-    private Servo clawSlideServo = null;
-    private Servo ClawServo = null;
-    private Servo IntakeSlideServoLeft = null;
-    private Servo IntakeSlideServoRight = null;
-    private Servo IntakeFlipServo = null;
-    private Servo IntakeFlipServo2 = null;
+     private Servo intakeServo1;
+     private Servo intakeServo2;
+     private Servo clawServo; // Changed from grabberServo to clawServo
+     private Servo intakeFlipperServo1; // First intake flipper servo
+     private Servo intakeFlipperServo2; // Second intake flipper servo
+     private Servo nonIntakeFlipperServo; // Only one non-intake flipper servo
 
-    @Override
-    public void runOpMode() {
+     // Variables for servo positions
+     private boolean clawToggle = false;
+     private boolean intakeFlipperToggle = false;
+     private boolean nonIntakeFlipperToggle = false;
 
-        // Initialize the hardware variables. Note that the strings used here must correspond
-        // to the names assigned during the robot configuration step on the DS or RC devices.
-        FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
-        BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
-        BackRight = hardwareMap.get(DcMotor.class, "BackRight");
-        Slide = hardwareMap.get(DcMotor.class, "Slide");
-        IntakeLeft = hardwareMap.get(Servo.class, "IntakeLeft");
-        IntakeRight = hardwareMap.get(Servo.class, "IntakeRight");
-        clawSlideServo = hardwareMap.get(Servo.class, "clawSlideServo");
-        ClawServo = hardwareMap.get(Servo.class, "ClawServo");
-        IntakeSlideServoLeft = hardwareMap.get(Servo.class, "IntakeSlideServoLeft");
-        IntakeSlideServoRight = hardwareMap.get(Servo.class, "IntakeSlideServoLeft");
-        IntakeFlipServo = hardwareMap.get(Servo.class, "IntakeFlipServo");
-        IntakeFlipServo2 = hardwareMap.get(Servo.class, "IntakeFlipServo2");
+     @Override
+     public void init() {
+         try {
+             // Initialize hardware
+             // Motors connected to Control Hub
+             frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor"); // Motor 0 (Control Hub)
+             frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor"); // Motor 1 (Control Hub)
+             backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor"); // Motor 2 (Control Hub)
+             backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor"); // Motor 3 (Control Hub)
 
-        // ########################################################################################
-        // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
-        // ########################################################################################
-        // Most robots need the motors on one side to be reversed to drive forward.
-        // The motor reversals shown here are for a "direct drive" robot (the wheels turn the same direction as the motor shaft)
-        // If your robot has additional gear reductions or uses a right-angled drive, it's important to ensure
-        // that your motors are turning in the correct direction.  So, start out with the reversals here, BUT
-        // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
-        // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
-        // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
+             // Motors connected to Expansion Hub
+             viperSlideMotor = hardwareMap.get(DcMotor.class, "viperSlideMotor"); // Motor 0 (Expansion Hub)
 
-        double max;
+             // Initialize servos connected to Control Hub
+             intakeServo1 = hardwareMap.get(Servo.class, "intakeServo1"); // Servo 0 (Control Hub)
+             intakeServo2 = hardwareMap.get(Servo.class, "intakeServo2"); // Servo 1 (Control Hub)
+             clawServo = hardwareMap.get(Servo.class, "clawServo"); // Servo 2 (Control Hub)
 
-        double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-        double lateral = gamepad1.left_stick_x;
-        double yaw = gamepad1.right_stick_x;
+             // Initialize servos connected to Expansion Hub
+             intakeFlipperServo1 = hardwareMap.get(Servo.class, "intakeFlipperServo1"); // Servo 3 (Expansion Hub)
+             intakeFlipperServo2 = hardwareMap.get(Servo.class, "intakeFlipperServo2"); // Servo 4 (Expansion Hub)
+             nonIntakeFlipperServo = hardwareMap.get(Servo.class, "nonIntakeFlipperServo"); // Servo 5 (Expansion Hub)
 
-        // Combine the joystick requests for each axis-motion to determine each wheel's power.
-        // Set up a variable for each drive wheel to save the power level for telemetry.
-        double leftFrontPower = axial + lateral + yaw;
-        double rightFrontPower = axial - lateral - yaw;
-        double leftBackPower = axial - lateral + yaw;
-        double rightBackPower = axial + lateral - yaw;
+             // Optionally reverse motors if needed
+             frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+             backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        // Normalize the values so no wheel power exceeds 100%
-        // This ensures that the robot maintains the desired motion.
-        max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-        max = Math.max(max, Math.abs(leftBackPower));
-        max = Math.max(max, Math.abs(rightBackPower));
+             telemetry.addData("Status", "Hardware Initialized");
+         } catch (Exception e) {
+             telemetry.addData("Error", "Failed to initialize hardware: " + e.getMessage());
+         }
+     }
 
-        if (max > 1.0) {
-            leftFrontPower /= max;
-            rightFrontPower /= max;
-            leftBackPower /= max;
-            rightBackPower /= max;
-        }
+     @Override
+     public void loop() {
+         // Motor control logic (same as before)
+         double drive = -gamepad1.left_stick_y;
+         double turn = gamepad1.left_stick_x;
+         double strafe = gamepad1.right_stick_x;
 
-        // This is test code:
-        //
-        // Uncomment the following code to test your motor directions.
-        // Each button should make the corresponding motor run FORWARD.
-        //   1) First get all the motors to take to correct positions on the robot
-        //      by adjusting your Robot Configuration if necessary.
-        //   2) Then make sure they run in the correct direction by modifying the
-        //      the setDirection() calls above.
-        // Once the correct motors move in the correct direction re-comment this code.
+         double frontLeftPower = drive + turn + strafe;
+         double frontRightPower = drive - turn - strafe;
+         double backLeftPower = drive + turn - strafe;
+         double backRightPower = drive - turn + strafe;
 
-            /*
-            leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
-            leftBackPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
-            rightFrontPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
-            rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
-            */
+         frontLeftMotor.setPower(frontLeftPower);
+         frontRightMotor.setPower(-frontRightPower);
+         backLeftMotor.setPower(-backLeftPower);
+         backRightMotor.setPower(-backRightPower);
 
-        // Send calculated power to wheels
-        FrontLeft.setPower(leftFrontPower);
-        BackLeft.setPower(leftBackPower);
-        FrontRight.setPower(rightFrontPower);
-        BackRight.setPower(rightBackPower);
+         //Slide movement
+         if (gamepad1.dpad_up) {
+             viperSlideMotor.setPower(1);
+         } else if (gamepad1.dpad_down) {
+             viperSlideMotor.setPower(1);
+         } else {
+             viperSlideMotor.setPower(0);
+         }
 
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-        telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-        telemetry.update();
-        waitForStart();
+         // Continuous intake servo control with triggers
+         if (gamepad1.right_trigger > 0.1) {
+             intakeServo1.setPosition(1.0); // Rotate intake servo 1 continuously in one direction
+             intakeServo2.setPosition(0.0); // Rotate intake servo 2 continuously in the opposite direction
+         } else if (gamepad1.left_trigger > 0.1) {
+             intakeServo1.setPosition(0.0); // Rotate intake servo 1 continuously in the opposite direction
+             intakeServo2.setPosition(1.0); // Rotate intake servo 2 continuously in one direction
+         } else {
+             intakeServo1.setPosition(0.5); // Neutral position
+             intakeServo2.setPosition(0.5); // Neutral position
+         }
 
-        if (gamepad1.dpad_right) {
-            IntakeSlideServoLeft.setPosition(1);
-            IntakeSlideServoRight.setPosition(1);
-        } else if (gamepad1.dpad_left) {
-            IntakeSlideServoLeft.setPosition(0.5);
-            IntakeSlideServoRight.setPosition(0.5);
-        } else {
-            IntakeSlideServoRight.setPosition(0);
-            IntakeSlideServoLeft.setPosition(0);
-        }
+         // Claw control (X button) logic remains the same
+         if (gamepad1.x) {
+             if (!clawToggle) {
+                 clawServo.setPosition(clawServo.getPosition() == 0.0 ? 0.25 : 0.0); // Open/Close claw
+                 clawToggle = true;
+             }
+         } else {
+             clawToggle = false;
+         }
 
-        // Servo Code for TeleOp
+         // Intake Flipper logic (B button) remains the same
+         if (gamepad1.b) {
+             if (!intakeFlipperToggle) {
+                 double currentPosition1 = intakeFlipperServo1.getPosition();
+                 intakeFlipperServo1.setPosition(currentPosition1 == 0.0 ? 0.5 : 0.0); // Toggle first flipper
+                 double currentPosition2 = intakeFlipperServo2.getPosition();
+                 intakeFlipperServo2.setPosition(currentPosition2 == 0.0 ? 0.5 : 0.0); // Toggle second flipper
+                 intakeFlipperToggle = true;
+             }
+         } else {
+             intakeFlipperToggle = false;
+         }
 
-        double SLIDE_SPEED;
-        SLIDE_SPEED = gamepad2.left_trigger;
-        Slide.setPower(-SLIDE_SPEED);
-        if (gamepad2.dpad_down) {
-            Slide.setPower(SLIDE_SPEED);
-        } else {
-            Slide.setPower(0);
-        }
+         // Non-Intake Flipper (A button) - set to 0.66
+         if (gamepad1.a) {
+             nonIntakeFlipperServo.setPosition(0.66); // Rotate to 0.66 when A is pressed
+         } else {
+             nonIntakeFlipperServo.setPosition(0.0); // Default position when A is not pressed
+         }
 
-        if (gamepad2.b) {
-            IntakeLeft.setPosition(1);
-            IntakeRight.setPosition(1);
-        } else {
-            IntakeLeft.setPosition(0);
-            IntakeRight.setPosition(0);
-        }
-
-        if (gamepad2.left_bumper) {
-            clawSlideServo.setPosition(-1);
-        } else {
-            clawSlideServo.setPosition(0);
-        }
-
-        if (gamepad2.right_bumper) {
-            ClawServo.setPosition(1);
-        } else {
-            ClawServo.setPosition(0);
-        }
-
-        if (gamepad2.dpad_left) {
-            IntakeFlipServo.setPosition(1);
-            IntakeFlipServo2.setPosition(1);
-        } else if (gamepad2.dpad_right) {
-            IntakeFlipServo.setPosition(0);
-            IntakeFlipServo2.setPosition(0);
-        } else {
-            IntakeFlipServo.setPosition(0);
-            IntakeFlipServo2.setPosition(0);
-        }
-    }
-}
+         // Telemetry for debugging
+         telemetry.addData("Viper Slide Power", viperSlideMotor.getPower());
+         telemetry.addData("Front Left Power", frontLeftPower);
+         telemetry.addData("Front Right Power", frontRightPower);
+         telemetry.addData("Back Left Power", backLeftPower);
+         telemetry.addData("Back Right Power", backRightMotor.getPower());
+         telemetry.addData("Intake Servo 1 Position", intakeServo1.getPosition());
+         telemetry.addData("Intake Servo 2 Position", intakeServo2.getPosition());
+         telemetry.addData("Claw Servo Position", clawServo.getPosition());
+         telemetry.addData("Intake Flipper 1 Position", intakeFlipperServo1.getPosition());
+         telemetry.addData("Intake Flipper 2 Position", intakeFlipperServo2.getPosition());
+         telemetry.addData("Non-Intake Flipper Position", nonIntakeFlipperServo.getPosition());
+         telemetry.update();
+     }
+ }
