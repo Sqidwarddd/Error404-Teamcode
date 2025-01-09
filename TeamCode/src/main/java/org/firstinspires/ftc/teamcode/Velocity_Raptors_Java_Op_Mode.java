@@ -80,7 +80,7 @@
 
              // Optionally reverse motors if needed
              frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
-             backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+             backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
              telemetry.addData("Status", "Hardware Initialized");
          } catch (Exception e) {
