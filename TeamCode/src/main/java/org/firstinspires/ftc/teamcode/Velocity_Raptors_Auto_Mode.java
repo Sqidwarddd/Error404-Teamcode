@@ -57,16 +57,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous
 public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
 
-    /* Declare OpMode members. */
-    private DcMotor FrontLeft   = null;
-    private DcMotor FrontRight  = null;
-    private DcMotor BackRight  = null;
-    private DcMotor BackLeft  = null;
-    private DcMotor Slide = null;
-    private DcMotor Slide2 = null;
-    private Servo clawSlideServo = null;
-    private Servo ClawServo = null;
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
 
     //Declare motor speeds
     static final double     FORWARD_SPEED = 1;
@@ -77,22 +68,23 @@ public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        FrontLeft  = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRight  = hardwareMap.get(DcMotor.class, "FrontRight");
-        BackRight  = hardwareMap.get(DcMotor.class, "BackRight");
-        BackLeft  = hardwareMap.get(DcMotor.class, "BackLeft");
-        Slide = hardwareMap.get(DcMotor.class, "Slide");
-        Slide2 = hardwareMap.get(DcMotor.class, "Slide2");
-        clawSlideServo = hardwareMap.get(Servo.class, "clawSlideServo");
-        ClawServo = hardwareMap.get(Servo.class, "ClawServo");
+        /* Declare OpMode members. */
+        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
+        DcMotor frontRight = hardwareMap.get(DcMotor.class, "FrontRight");
+        DcMotor backRight = hardwareMap.get(DcMotor.class, "BackRight");
+        DcMotor backLeft = hardwareMap.get(DcMotor.class, "BackLeft");
+        DcMotor slide = hardwareMap.get(DcMotor.class, "Slide");
+        DcMotor slide2 = hardwareMap.get(DcMotor.class, "Slide2");
+        Servo clawSlideServo = hardwareMap.get(Servo.class, "clawSlideServo");
+        Servo clawServo = hardwareMap.get(Servo.class, "ClawServo");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        FrontLeft.setDirection(DcMotor.Direction.REVERSE);
-        FrontRight.setDirection(DcMotor.Direction.REVERSE);
-        BackRight.setDirection(DcMotor.Direction.FORWARD);
-        BackLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
@@ -104,10 +96,10 @@ public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
         // Step 1:  Drive forward for 2 seconds
-        FrontLeft.setPower(FORWARD_SPEED);
-        FrontRight.setPower(FORWARD_SPEED);
-        BackRight.setPower(FORWARD_SPEED);
-        BackLeft.setPower(FORWARD_SPEED);
+        frontLeft.setPower(FORWARD_SPEED);
+        frontRight.setPower(FORWARD_SPEED);
+        backRight.setPower(FORWARD_SPEED);
+        backLeft.setPower(FORWARD_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 2)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
@@ -115,10 +107,10 @@ public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
         }
 
         // Step 2:  Spin right for 1.3 seconds
-        FrontLeft.setPower(TURN_SPEED);
-        FrontRight.setPower(-TURN_SPEED);
-        BackRight.setPower(-TURN_SPEED);
-        BackLeft.setPower(TURN_SPEED);
+        frontLeft.setPower(TURN_SPEED);
+        frontRight.setPower(-TURN_SPEED);
+        backRight.setPower(-TURN_SPEED);
+        backLeft.setPower(TURN_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.3)) {
             telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
@@ -126,8 +118,8 @@ public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
         }
 
         //Step 3:  Move slides to proper position (2.4 second)
-        Slide.setPower(INTAKE_SPEED);
-        Slide2.setPower(INTAKE_SPEED);
+        slide.setPower(INTAKE_SPEED);
+        slide2.setPower(INTAKE_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 2.4)) {
             telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
@@ -136,7 +128,7 @@ public class Velocity_Raptors_Auto_Mode extends LinearOpMode {
 
         //Step 4:  Servos should position to touch low rung (1 seconds)
         clawSlideServo.setPosition(1);
-        ClawServo.setPosition(1);
+        clawServo.setPosition(1);
         while (opModeIsActive() && (runtime.seconds() < 1)) {
             telemetry.addData("Path", "Leg 4: %4" + ".1f S Elapsed", runtime.seconds());
             telemetry.update();

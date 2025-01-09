@@ -6,10 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Custom Servo and Motor Code", group = "TeleOp")
 public class testing_zone extends OpMode {
-    private DcMotor motor2;
-    private DcMotor motor3;
-    private DcMotor motor4;
-    private DcMotor motor5;
     private Servo intakeServo1, intakeServo2, flipServo1, flipServo2, clawServo, armServo;
 
     // Track the state of toggle buttons
@@ -22,10 +18,10 @@ public class testing_zone extends OpMode {
         // Initialize motors
         // Declare motors and servos
         DcMotor motor1 = hardwareMap.get(DcMotor.class, "motor1");
-        motor2 = hardwareMap.get(DcMotor.class, "motor2");
-        motor3 = hardwareMap.get(DcMotor.class, "motor3");
-        motor4 = hardwareMap.get(DcMotor.class, "motor4");
-        motor5 = hardwareMap.get(DcMotor.class, "motor5");
+        DcMotor motor2 = hardwareMap.get(DcMotor.class, "motor2");
+        DcMotor motor3 = hardwareMap.get(DcMotor.class, "motor3");
+        DcMotor motor4 = hardwareMap.get(DcMotor.class, "motor4");
+        DcMotor motor5 = hardwareMap.get(DcMotor.class, "motor5");
 
         // Initialize servos
         intakeServo1 = hardwareMap.get(Servo.class, "intakeServo1");
