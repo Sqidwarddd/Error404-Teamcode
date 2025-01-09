@@ -57,12 +57,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous
 public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
 
-    /* Declare OpMode members. */
-    private DcMotor frontLeftMotor   = null;
-    private DcMotor frontRightMotor  = null;
-    private DcMotor backRightMotor  = null;
-    private DcMotor backLeftMotor  = null;
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
 
     //Declare motor speeds
     static final double FORWARD_SPEED = 1;
@@ -72,10 +67,11 @@ public class Velocity_Raptors_Backup_Auto extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        frontLeftMotor  = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        frontRightMotor  = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        backRightMotor  = hardwareMap.get(DcMotor.class, "backRightMotor");
-        backLeftMotor  = hardwareMap.get(DcMotor.class, "backLeftMotor");
+        /* Declare OpMode members. */
+        DcMotor frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        DcMotor frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+        DcMotor backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
+        DcMotor backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.

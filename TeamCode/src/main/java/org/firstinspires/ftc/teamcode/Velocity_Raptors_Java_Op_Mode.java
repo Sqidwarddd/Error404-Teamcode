@@ -54,7 +54,6 @@
      // Variables for servo positions
      private boolean clawToggle = false;
      private boolean intakeFlipperToggle = false;
-     private boolean nonIntakeFlipperToggle = false;
 
      @Override
      public void init() {
