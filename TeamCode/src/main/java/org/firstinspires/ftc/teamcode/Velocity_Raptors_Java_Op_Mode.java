@@ -107,7 +107,7 @@
 
          //Slide movement
          if (gamepad1.dpad_up) {
-             viperSlideMotor.setPower(1);
+             viperSlideMotor.setPower(-1);
          } else if (gamepad1.dpad_down) {
              viperSlideMotor.setPower(1);
          } else {
