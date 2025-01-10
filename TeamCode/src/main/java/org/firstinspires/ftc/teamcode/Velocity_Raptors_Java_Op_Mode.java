@@ -112,7 +112,7 @@
          } else if (gamepad1.dpad_down) {
              viperSlideMotor.setPower(SLIDE_SPEED);
          } else {
-             viperSlideMotor.setPower(0); v
+             viperSlideMotor.setPower(0); 
          }
 
          // Continuous intake servo control with triggers
