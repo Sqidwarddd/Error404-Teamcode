@@ -34,7 +34,7 @@
  import com.qualcomm.robotcore.hardware.DcMotor;
  import com.qualcomm.robotcore.hardware.Servo;
 
- @TeleOp(name = "Velocity Raptors Actual Code", group = "TeleOp")
+ @TeleOp(name = "Velocity Raptors TeleOp", group = "TeleOp")
  public class Velocity_Raptors_Java_Op_Mode extends OpMode {
 
      // Motor and Servo Declarations
@@ -112,7 +112,7 @@
          } else if (gamepad1.dpad_down) {
              viperSlideMotor.setPower(SLIDE_SPEED);
          } else {
-             viperSlideMotor.setPower(0); 
+             viperSlideMotor.setPower(0);
          }
 
          // Continuous intake servo control with triggers
