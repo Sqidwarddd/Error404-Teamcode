@@ -92,8 +92,8 @@
      public void loop() {
          // Motor control logic (same as before)
          double drive = -gamepad1.left_stick_y;
-         double turn = gamepad1.left_stick_x;
-         double strafe = gamepad1.right_stick_x;
+         double turn = gamepad1.right_stick_x;
+         double strafe = gamepad1.left_stick_x;
 
          double frontLeftPower = drive + turn + strafe;
          double frontRightPower = drive - turn - strafe;
@@ -112,7 +112,7 @@
          } else if (gamepad1.dpad_down) {
              viperSlideMotor.setPower(SLIDE_SPEED);
          } else {
-             viperSlideMotor.setPower(0);
+             viperSlideMotor.setPower(0); v
          }
 
          // Continuous intake servo control with triggers
